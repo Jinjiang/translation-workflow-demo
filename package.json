@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@algolia/client-search": "^4.17.0",
     "simple-git": "^3.18.0",
     "vitepress": "1.0.0-alpha.75",
     "vue": "^3.2.47"
