@@ -9,7 +9,7 @@ const getLangMap = async () => {
   if (log && log.all) {
     let langLeft = langList.length
     log.all.some(({ date, message }) => {
-      const matched = message.match(/^docs\((.+)\)\: sync to (\w+)$/)
+      const matched = message.match(/^docs\((.+)\)\: sync to (\w+)/)
       if (matched) {
         const lang = matched[1]
         const hash = matched[2]
