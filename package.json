@@ -4,12 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "simple-git": "^3.18.0"
+    "simple-git": "^3.18.0",
+    "vitepress": "1.0.0-alpha.75",
+    "vue": "^3.2.47"
   }
 }
