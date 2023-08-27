@@ -1,49 +1,60 @@
+const fs = require('fs')
 const SimpleGit = require('simple-git')
+
 const git = SimpleGit()
 
-const langList = ['zh']
+const HELP_INFO = `
+This command is used to set the checkpoint of a certain language and save it into langMap.json.
 
-const getLangMap = async () => {
-  const langMap = new Map()
-  const log = await git.log(['-n', '100', '--date=short'])
-  if (log && log.all) {
-    let langLeft = langList.length
-    log.all.some(({ date, message }) => {
-      const matched = message.match(/^docs\((.+)\)\: sync to (\w+)/)
-      if (matched) {
-        const lang = matched[1]
-        const hash = matched[2]
-        if (!langMap.has(lang)) {
-          langMap.set(lang, {
-            hash,
-            // format: 'YYYY-MM-DD'
-            date: new Date(date).toISOString().slice(0, 10),
-          })
-          langLeft--
-          if (langLeft === 0) {
-            return true
-          }
-        }
-      }
-      return false
-    })
+Usage:
+node foo.js <lang> <hash|branch|tag>
+
+Example:
+node foo.js zh 1234567
+node foo.js zh main
+node foo.js zh v1.0.0
+`.trim()
+
+const getCommitInfo = async (commit) => {
+  try {
+    const log = await git.log([commit, '-n', '1'])
+    const { hash, date } = log.latest
+    return { hash, date: new Date(date).toISOString().substring(0, 10) }
+  } catch (err) {
+    throw new Error(`Cannot get commit info for ${commit}`)
   }
-  return langMap
 }
 
-const writeLangMap = async (langMap) => {
-  const langObj = {}
-  langMap.forEach((value, key) => {
-    langObj[key] = value
-  })
-
-  const fs = require('fs')
-  fs.writeFileSync('./langMap.json', JSON.stringify(langObj, null, 2))
+const writeLangMap = async (lang, hash, date) => {
+  const langJson = {}
+  try {
+    const previousContent = fs.readFileSync('./langMap.json', 'utf8')
+    const previousJson = JSON.parse(previousContent)
+    Object.assign(langJson, previousJson)
+  }
+  catch (err) {
+    console.log('No previous langMap.json')
+  }
+  langJson[lang] = {
+    hash,
+    date,
+  }
+  fs.writeFileSync('./langMap.json', JSON.stringify(langJson, null, 2))
 }
 
 const run = async () => {
-  const langMap = await getLangMap()
-  await writeLangMap(langMap)
+  if (process.argv.length < 3) {
+    console.log(HELP_INFO)
+    return
+  }
+  if (process.argv[2] === '-h' || process.argv[2] === '--help') {
+    console.log(HELP_INFO)
+    return
+  }
+  const lang = process.argv[2]
+  const commit = process.argv[3] || 'main'
+  const { hash, date } = await getCommitInfo(commit)
+  await writeLangMap(lang, hash, date)
 }
 
 run()

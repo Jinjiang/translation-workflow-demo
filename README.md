@@ -10,7 +10,8 @@ You can also refer to these [example PRs](https://github.com/Jinjiang/translatio
 
 - Friendly translation workflow.
 - Able to show latest checkpoint for each language on the website.
-- Comparing to the current workflow on [Vue Router](https://github.com/vuejs/router/blob/6cc5b00d4ff0b5f45071de6d02c5984b3df3382f/.github/contributing.md#contributing-docs), no checkpoint branches are required, neither the manual update step.
+- Comparing to the current workflow on [Vue Router](https://github.com/vuejs/router/blob/6cc5b00d4ff0b5f45071de6d02c5984b3df3382f/.github/contributing.md#contributing-docs), neither checkpoint branches nor commit log format are required.
+- _People just need one more step to keep the `langMap.json` updated when each time they update their translations._
 
 ## Usage
 
@@ -21,19 +22,18 @@ For contributors/translators:
 1. run `node bar.js <lang>` to see checkpoint and changes to be translated
 2. create a new git branch
 3. do the translation
-4. `git commit` with message in format `docs(<lang>): sync to <checkpoint-hash>`
+4. run `ndoe foo.js <lang>` to update the `langMap.json` before the translation commit
 5. create a PR on GitHub
 
 For maintainer:
 
 1. review and approve
-2. normal merge or squash merge
-    - when squash merge, make sure the commit message is `docs(<lang>): sync to <checkpoint-hash> (#<pr-id>)`. otherwise the checkpoint info won't be rendered on the website correctly.
+2. normal merge or squash merge (they both work)
 
 ### Local tools
 
-- `node foo.js`: update the latest checkpoint info into `langMap.json`.
-- `node bar.js <lang>`: see what translation you need to do to sync up with the original docs.
+- `node foo.js <lang> [<branch>|<tag>|<commit>]`: update the checkpoint info of a certain language into `langMap.json`.
+- `node bar.js <lang> [<branch>|<tag>|<commit>]`: see what translation you need to do to sync up with the original docs.
 
 ### Config on Netlify
 
